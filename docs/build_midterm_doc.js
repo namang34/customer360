@@ -447,7 +447,7 @@ const diagram = [
     "Appendix B — Agent & Tool Detail",
     "Each agent's toolset, and the data source every tool reads from or writes to. "
     + "Full resolution: docs/architecture_agents.svg",
-    "architecture_agents.png", 720, 552, true),
+    "architecture_agents.png", 675, 552, true),
 ];
 
 const doc = new Document({
