@@ -20,7 +20,7 @@ Scored by `run_evaluation.py` against each scenario's `ground_truth.json`, offli
 
 237 tests pass in under 10 seconds.
 
-Deliverables: `docs/Customer360_Solution_Document.pdf` (3-page solution document) ·
+Deliverables: `docs/Customer360_MidTerm_Submission.pdf` (mid-term submission: research, architecture, progress) ·
 `docs/architecture.svg` (system flow) · `docs/architecture_agents.svg` (agent & tool detail: every tool and the
 data source it touches) · `docs/AGENTS.md` (agent register: what each agent
 is, what it can do, its exact I/O schema) · `docs/EVALUATION.md` (full evaluation write-up).
