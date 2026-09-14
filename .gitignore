@@ -10,11 +10,6 @@ out/
 *.db
 chroma/
 
-# Personal working notes -- scaffolding for my own reading and viva prep, not
-# part of the submission. Kept locally, never pushed.
-docs/RESEARCH_READING_PACK.md
-Claude outputs/
-
 __pycache__/
 *.py[cod]
 .pytest_cache/
