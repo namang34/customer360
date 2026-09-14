@@ -1,0 +1,116 @@
+
+========================================================================
+RUN scenario_01  [offline]
+========================================================================
+  events=116 checkpoints=74 syntheses=74 (carried_forward=5) proposals=26 guardrail_blocks=0 critique_rejects=0 escalations=26 late_arrivals=1 llm_calls=0 llm_failures=2 embedder=hashing-256
+  wrote out/scenario_01_inferred_events.json
+
+=== scenario_01
+
+CHECKPOINTS
+  2026-02-15
+      state ok   medical_hardship             want medical_hardship
+      conf  ok   low                          want low
+      act   ok   no_action                    want no_action
+  2026-03-12
+      state ok   medical_hardship             want medical_hardship
+      conf  ok   medium                       want medium
+      act   ok   no_action                    want no_action
+  2026-03-26
+      state ok   medical_hardship             want medical_hardship
+      conf  ok   high                         want high
+      act   ok   support_intervention         want support_intervention
+      sub   ok   medical_hardship_payment_plan want medical_hardship_payment_plan
+      hitl  ok   escalated                    want escalated
+
+LEAD TIME
+  2026-03-26  ok   -- support_intervention fired 5 days before the checkpoint (ideal >= 1)
+
+FALSE-POSITIVE CHECKS
+  EVT_000382  ok   -- no forbidden action inside 72h
+  EVT_000402  ok   -- no forbidden action inside 72h
+
+  inferred_state   100%
+  confidence_band  100%
+  action           100%
+  all fields exact 100%
+  false positives  100% clean
+
+========================================================================
+RUN scenario_02  [offline]
+========================================================================
+  events=110 checkpoints=74 syntheses=74 (carried_forward=1) proposals=28 guardrail_blocks=0 critique_rejects=0 escalations=28 late_arrivals=1 llm_calls=0 llm_failures=2 embedder=hashing-256
+  wrote out/scenario_02_inferred_events.json
+
+=== scenario_02
+
+CHECKPOINTS
+  2026-02-20
+      state ok   new_child_life_event         want new_child_life_event
+      conf  ok   low                          want low
+      act   ok   no_action                    want no_action
+  2026-03-27
+      state ok   new_child_life_event         want new_child_life_event
+      conf  ok   high                         want high
+      act   ok   personalized_offer           want personalized_offer
+      sub   ok   childcare_savings_or_insurance_plan want childcare_savings_or_insurance_plan
+      hitl  ok   escalated                    want escalated
+
+LEAD TIME
+  2026-03-27  ok   -- personalized_offer fired 8 days before the checkpoint (ideal >= 2)
+
+FALSE-POSITIVE CHECKS
+  EVT_000328  ok   -- no forbidden action inside 72h
+
+  inferred_state   100%
+  confidence_band  100%
+  action           100%
+  all fields exact 100%
+  false positives  100% clean
+
+========================================================================
+RUN scenario_03  [offline]
+========================================================================
+  events=72 checkpoints=74 syntheses=74 (carried_forward=5) proposals=42 guardrail_blocks=0 critique_rejects=0 escalations=42 late_arrivals=0 llm_calls=0 llm_failures=2 embedder=hashing-256
+  wrote out/scenario_03_inferred_events.json
+
+=== scenario_03
+
+CHECKPOINTS
+  2026-02-15
+      state ok   churn_risk                   want churn_risk
+      conf  ok   low                          want low
+      act   ok   no_action                    want no_action
+  2026-03-08
+      state ok   churn_risk                   want churn_risk
+      conf  ok   high                         want high
+      act   ok   relationship_manager_escalation want relationship_manager_escalation
+      sub   ok   premium_retention_offer_and_fee_waiver want premium_retention_offer_and_fee_waiver
+      hitl  ok   escalated                    want escalated
+  2026-04-10
+      state ok   churn_risk                   want churn_risk
+      conf  ok   high                         want high
+      act   ok   proactive_retention_outreach want proactive_retention_outreach
+
+LEAD TIME
+  2026-03-08  ok   -- relationship_manager_escalation fired 3 days before the checkpoint (ideal >= 3)
+
+FALSE-POSITIVE CHECKS
+  EVT_000447  ok   -- no forbidden action inside 72h
+
+  inferred_state   100%
+  confidence_band  100%
+  action           100%
+  all fields exact 100%
+  false positives  100% clean
+
+========================================================================
+OVERALL
+========================================================================
+  checkpoints scored     8
+  inferred_state         100%
+  confidence_band        100%
+  action                 100%
+  all fields exact       100%
+  false-positive checks  100% clean (4 checked)
+  lead-time targets      100% met

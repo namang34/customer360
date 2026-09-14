@@ -1,0 +1,26 @@
+# Secrets -- the brief notes the original keys were exposed in screenshots and
+# should be treated as compromised. Never let this file reach the repo.
+.env
+*.key
+
+# Generated output. Regenerate with run_pipeline.py; keeping it out of git means
+# a stale file can never be mistaken for a fresh run's results.
+out/
+*.sqlite
+*.db
+chroma/
+
+# Personal working notes -- scaffolding for my own reading and viva prep, not
+# part of the submission. Kept locally, never pushed.
+docs/RESEARCH_READING_PACK.md
+Claude outputs/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+venv/
+.venv/
+.vscode/
+.idea/
+.DS_Store
