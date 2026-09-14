@@ -68,7 +68,7 @@ argument with no default. A caller physically cannot query memory without statin
 
 ### LangChain, "LangGraph: Multi-Agent Workflows"
 <https://www.langchain.com/blog/langgraph-multi-agent-workflows> · with the LangGraph multi-agent
-concepts docs, <https://langchain-ai.github.io/langgraph/concepts/multi_agent/>
+concepts docs, <https://docs.langchain.com/oss/python/langchain/multi-agent>
 
 **Takeaway.** Compares collaboration, supervisor and hierarchical topologies. What separates them is
 whether agents see each other's work in progress: under collaboration "all the work either of them
@@ -146,9 +146,9 @@ argument for ambient agents.
 
 Reference material, read as needed rather than studied.
 
-- LangChain Google GenAI integration — <https://python.langchain.com/docs/integrations/chat/google_generative_ai/>
-- LangChain Groq integration — <https://python.langchain.com/docs/integrations/chat/groq/>
-- LangSmith tracing — <https://docs.smith.langchain.com/>
+- LangChain Google GenAI integration — <https://docs.langchain.com/oss/python/integrations/chat/google_generative_ai>
+- LangChain Groq integration — <https://docs.langchain.com/oss/python/integrations/chat/groq>
+- LangSmith tracing — <https://docs.langchain.com/langsmith/observability>
 - Python `sqlite3` — <https://docs.python.org/3/library/sqlite3.html>
 - Python `dataclasses` (frozen dataclasses for immutable events) — <https://docs.python.org/3/library/dataclasses.html>
 - pytest — <https://docs.pytest.org/>

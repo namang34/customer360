@@ -18,9 +18,9 @@ Scored by `run_evaluation.py` against each scenario's `ground_truth.json`, offli
 | false-positive checks | clean | clean | clean | **4/4** |
 | lead-time targets | met | met | met | **4/4** |
 
-237 tests pass in under 10 seconds.
+237 tests pass in under 20 seconds.
 
-Deliverables: `docs/Customer360_MidTerm_Submission.pdf` (mid-term submission: research, architecture, progress) ·
+Deliverables: `docs/Customer360_Solution_Document.pdf` (3-page solution document) ·
 `docs/architecture.svg` (system flow) · `docs/architecture_agents.svg` (agent & tool detail: every tool and the
 data source it touches) · `docs/AGENTS.md` (agent register: what each agent
 is, what it can do, its exact I/O schema) · `docs/EVALUATION.md` (full evaluation write-up).
@@ -46,44 +46,11 @@ tests exercise and what an examiner can reproduce without keys or quota.
 
 ## Architecture
 
-```
-              replay engine  (ingestion-ordered, never releases the future)
-                    |
-       +------------+------------+
-       |                         |
-   EventTick                 ClockTick (daily)
-       |                         |
-       v                         v
-   +---------------------------------------+
-   |        PERCEPTION SWARM (layer 1)      |   parallel, independent,
-   |  Transaction  Usage  Support  LifeSig  |   disjoint source systems
-   +---------------------------------------+
-                    |  structured findings
-                    v
-              STATE BOARD  <----> episodic memory (SQLite, as_of-filtered)
-                    |
-                    |  agent-dependent trigger: >= 2 agents flagged
-                    v
-            SYNTHESIS AGENT (layer 2)        state + confidence
-                    |
-                    v
-            ACTION PROPOSER                  RAG over policy (ChromaDB)
-                    |
-                    v
-            GUARDRAIL                        code check: >= 2 source systems
-                    |
-                    v
-            CRITIQUE AGENT (layer 3)         adversarial, one bounded retry
-                    |
-                    v
-            HITL                             action != no_action -> escalated
-                    |
-                    v
-            inferred_events.json             validated on construction
-                    +
-            review_queue.json                where the system was unsure but
-                                             several sources agreed
-```
+![System flow — every component and how work passes between them](docs/architecture.png)
+
+![Agent and tool detail — every agent, its tools, and the data source each tool touches](docs/architecture_agents.png)
+
+Full resolution: [`docs/architecture.svg`](docs/architecture.svg) · [`docs/architecture_agents.svg`](docs/architecture_agents.svg)
 
 ### Memory
 

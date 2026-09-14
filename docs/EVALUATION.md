@@ -15,7 +15,7 @@ every number below with no API keys and no network.
 | false-positive checks | 2/2 | 1/1 | 1/1 | **4/4** |
 | lead-time targets | 1/1 | 1/1 | 2/2 | **4/4** |
 
-221 automated tests pass in ~8 seconds.
+237 automated tests pass in under 20 seconds.
 
 ---
 
@@ -117,7 +117,7 @@ three customers. Every percentage above is out of a single-digit denominator.
 ### 5. The LLM path is less tested than the deterministic path
 
 Every test runs with `C360_OFFLINE=1`, so the language models are exercised
-manually rather than in CI. The deterministic fallbacks are what the 221 tests
+manually rather than in CI. The deterministic fallbacks are what the 237 tests
 cover. `--live` should produce the same or better results — the LLM only
 adjudicates between close candidate states, refines an action already authorised
 by retrieved policy, and judges proportionality — but "should" is doing work in
@@ -186,7 +186,7 @@ per scenario rather than 74.
 ## Reproducing
 
 ```bash
-python -m pytest tests/ -q       # 221 tests, ~8s
+python -m pytest tests/ -q       # 237 tests
 python run_evaluation.py         # the table at the top
 python run_evaluation.py --live  # same, using Gemini/Groq from .env
 python watch.py data/scenario_03 --speed 2
