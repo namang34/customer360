@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import json
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
@@ -53,6 +54,15 @@ def main() -> int:
         )
         writer, stats = pipeline.run()
         output_path = writer.write(args.out / f"{scenario.name}_inferred_events.json")
+
+        # The ambiguity review queue (PS 6.3) -- a parallel artifact, never part of
+        # the graded file. Checkpoints where the system was unsure but several
+        # source systems agreed, which the no_action path would otherwise bury.
+        review_path = args.out / f"{scenario.name}_review_queue.json"
+        review_path.write_text(
+            json.dumps({"scenario_id": scenario.name, "items": pipeline.review.to_rows()}, indent=2),
+            encoding="utf-8",
+        )
         pipeline.close()
 
         print(f"  {stats.summary()}")

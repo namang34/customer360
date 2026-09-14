@@ -57,6 +57,7 @@ from .memory import EpisodicMemory
 from .output import Checkpoint, InferredEventsWriter
 from .pii import Redactor
 from .replay import ClockTick, EventTick, ReplayEngine
+from .review import ReviewQueue
 from .schema import Action, ConfidenceBand, HitlStatus, InferredState
 from .semantic import SemanticMemory
 from .state_board import StateBoard
@@ -75,6 +76,7 @@ class RunStats:
     critique_rejections: int = 0
     critique_downgrades: int = 0
     escalations: int = 0
+    flagged_for_review: int = 0
     late_arrivals: int = 0
     llm_calls: int = 0
     llm_failures: int = 0
@@ -85,7 +87,8 @@ class RunStats:
             f"events={self.events} checkpoints={self.checkpoints} syntheses={self.syntheses} "
             f"(carried_forward={self.carried_forward}) proposals={self.proposals} "
             f"guardrail_blocks={self.guardrail_blocks} critique_rejects={self.critique_rejections} "
-            f"escalations={self.escalations} late_arrivals={self.late_arrivals} "
+            f"escalations={self.escalations} flagged_for_review={self.flagged_for_review} "
+            f"late_arrivals={self.late_arrivals} "
             f"llm_calls={self.llm_calls} llm_failures={self.llm_failures} embedder={self.embedder}"
         )
 
@@ -131,6 +134,8 @@ class Pipeline:
         self.proposer = ActionProposer(self.semantic, llm=reasoning)
         self.critic = CritiqueAgent(llm=reasoning)
         self.hitl = HitlStub(interactive=interactive_hitl, responses=hitl_responses)
+        # Parallel to the graded output, never part of it -- see review.py.
+        self.review = ReviewQueue()
 
         self.trace = RunTrace(
             trace_path,
@@ -250,6 +255,19 @@ class Pipeline:
         )
         if hitl.status is HitlStatus.ESCALATED:
             self.stats.escalations += 1
+
+        # Escalation for ambiguity (PS 6.3). Runs on the FINAL action, so a
+        # checkpoint the critique rejected is still considered. Touches nothing
+        # in the graded row.
+        flagged = self.review.consider(
+            synthesis,
+            ActionProposal(as_of=as_of, action=action, action_subtype=subtype,
+                           rationale=proposal.rationale, event_ids=proposal.event_ids),
+        )
+        if flagged is not None:
+            self.stats.flagged_for_review += 1
+            self.trace.record(as_of, kind="review_flag", reason=flagged.reason,
+                              detail=flagged.detail)
 
         checkpoint = self._build_checkpoint(as_of, synthesis, proposal, hitl, verdict, critique)
         self.writer.add(checkpoint)

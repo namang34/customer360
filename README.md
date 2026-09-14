@@ -18,7 +18,7 @@ Scored by `run_evaluation.py` against each scenario's `ground_truth.json`, offli
 | false-positive checks | clean | clean | clean | **4/4** |
 | lead-time targets | met | met | met | **4/4** |
 
-221 tests pass in under 8 seconds.
+237 tests pass in under 10 seconds.
 
 Deliverables: `docs/Customer360_Solution_Document.pdf` (3-page solution document) ·
 `docs/architecture.svg` (system flow) · `docs/architecture_agents.svg` (agent & tool detail: every tool and the
@@ -35,7 +35,7 @@ a calibration result, not independent evidence of generalisation.
 conda activate customer360
 pip install -r requirements.txt
 
-python -m pytest tests/ -q          # 221 tests
+python -m pytest tests/ -q          # 237 tests
 python run_evaluation.py            # run + score all three scenarios
 python watch.py data/scenario_03 --speed 2   # watch it think, ~2.5 min
 ```
@@ -80,6 +80,9 @@ tests exercise and what an examiner can reproduce without keys or quota.
                     |
                     v
             inferred_events.json             validated on construction
+                    +
+            review_queue.json                where the system was unsure but
+                                             several sources agreed
 ```
 
 ### Memory
@@ -125,6 +128,7 @@ src/c360/
   prompts.py      every LLM prompt in the system, in one file
   tracing.py      local JSONL trace + LangSmith
   pipeline.py     the orchestrator
+  review.py       the ambiguity review queue -- escalation for uncertainty
   scoring.py      the evaluation harness
 run_replay.py       step-1 smoke test
 run_pipeline.py     replay -> decision -> file

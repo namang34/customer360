@@ -197,6 +197,30 @@ intervention in all three scenarios as escalated. `reject` turns the action into
 `no_action` in the output; recording `human_rejected` while still emitting the
 action would make the audit trail a lie.
 
+### Ambiguity review queue · `review.py`
+
+| | |
+|---|---|
+| **Input** | `Synthesis` + the final `ActionProposal` |
+| **Output** | `ReviewItem(as_of, reason, inferred_state, confidence_band, source_systems, event_ids, detail)` |
+| **Prompt** | none — arithmetic and set membership |
+
+Production Bar Checklist 6.3 asks for escalation on **ambiguity**, not only on
+cost. Gate 1 turns low confidence into `no_action`, and `no_action` is
+auto-approved — so without this the system calls a human when it is certain and
+goes silent when it is unsure.
+
+Raises on two patterns, both only when the final action is `no_action`:
+**weak_but_corroborated** (≥ 2 independent source systems agree, below the bar to
+act) and **contested** (top two candidate states within 25%). Raised on *change*,
+not on persistence — an unchanged situation is already on the queue, and the first
+implementation produced 38 items across scenario_01's 74 checkpoints by ignoring
+that.
+
+Nothing here touches a `Checkpoint`. `hitl_status` is graded and ground truth
+marks these rows `auto_approved`; the queue is a second artifact written beside
+the graded file.
+
 ---
 
 ## Synchronous vs asynchronous

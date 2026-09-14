@@ -192,7 +192,37 @@ python run_evaluation.py --live  # same, using Gemini/Groq from .env
 python watch.py data/scenario_03 --speed 2
 ```
 
-Every run writes `out/<scenario>_inferred_events.json` and
-`out/<scenario>.trace.jsonl`. The trace carries one record per checkpoint with the
-findings, affinity scores, guardrail verdict, critique verdict and HITL routing —
-enough to answer "why did it do that on 8 March?" without re-running anything.
+Every run writes `out/<scenario>_inferred_events.json`,
+`out/<scenario>_review_queue.json` and `out/<scenario>.trace.jsonl`. The trace
+carries one record per checkpoint with the findings, affinity scores, guardrail
+verdict, critique verdict and HITL routing — enough to answer "why did it do that
+on 8 March?" without re-running anything.
+
+## The ambiguity review queue
+
+Production Bar Checklist 6.3 asks that low confidence, or an unresolved
+disagreement, reach a human "independent of the dollar amount involved". The
+graded path cannot do this: Gate 1 turns anything below high confidence into
+`no_action`, and `no_action` is auto-approved. Composed, those two rules mean the
+system asks for a human when it is certain and says nothing when it is unsure.
+
+`review.py` closes that as a **parallel** channel rather than a change to
+`hitl_status` — which is a graded field that ground truth marks `auto_approved` at
+exactly these checkpoints. A test asserts every flagged checkpoint still reads
+`no_action / auto_approved` in the graded file.
+
+What it raises, across 74 checkpoints per scenario:
+
+| | items | what they are |
+|---|---|---|
+| scenario_01 | 2 | medical hardship corroborated across card + ledger, at low then medium |
+| scenario_02 | 4 | two contested reads in February, then new-child breadth without strength |
+| scenario_03 | 1 | 12 Feb — support and usage agree on churn three weeks before the escalation |
+
+The first implementation raised an item on **every** qualifying checkpoint and
+produced 38 for scenario_01 — the same two source systems restated daily for five
+weeks. That is the alert-fatigue failure the AML research behind `guardrail.py`
+describes, reproduced in miniature. It now raises only when the picture changes:
+a different reason, state, confidence band, or a new source system joining. A
+test caps the queue at ten items per scenario so that regression cannot return
+quietly.
